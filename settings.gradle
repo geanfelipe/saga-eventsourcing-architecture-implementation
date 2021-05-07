@@ -1,0 +1,6 @@
+include ':core-apis'
+include ':order-service'
+include ':payment-service'
+include ':shipping-service'
+
+rootProject.name = 'saga-pattern-axon-spring-boot-sample'

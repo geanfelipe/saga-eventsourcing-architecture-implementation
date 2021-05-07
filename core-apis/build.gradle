@@ -1,0 +1,5 @@
+sourceCompatibility = '11'
+
+dependencies {
+	implementation 'org.axonframework:axon-spring-boot-starter:4.2.1'
+}
