@@ -1,9 +1,15 @@
 
 package com.gean.demo.core.command.api;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderCreatedEvent {
+import org.axonframework.serialization.Revision;
+
+@Revision("1.0")
+public class OrderCreatedEvent implements Serializable {
+
+	private static final long serialVersionUID = -6337890700651040452L;
 
 	private String orderId;
 
@@ -69,4 +75,65 @@ public class OrderCreatedEvent {
 		this.orderStatus = orderStatus;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (currency == null ? 0 : currency.hashCode());
+		result = prime * result + (itemType == null ? 0 : itemType.hashCode());
+		result = prime * result + (orderId == null ? 0 : orderId.hashCode());
+		result = prime * result + (orderStatus == null ? 0 : orderStatus.hashCode());
+		result = prime * result + (price == null ? 0 : price.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final OrderCreatedEvent other = (OrderCreatedEvent) obj;
+		if (currency == null) {
+			if (other.currency != null) {
+				return false;
+			}
+		} else if (!currency.equals(other.currency)) {
+			return false;
+		}
+		if (itemType == null) {
+			if (other.itemType != null) {
+				return false;
+			}
+		} else if (!itemType.equals(other.itemType)) {
+			return false;
+		}
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
+			return false;
+		}
+		if (orderStatus == null) {
+			if (other.orderStatus != null) {
+				return false;
+			}
+		} else if (!orderStatus.equals(other.orderStatus)) {
+			return false;
+		}
+		if (price == null) {
+			if (other.price != null) {
+				return false;
+			}
+		} else if (!price.equals(other.price)) {
+			return false;
+		}
+		return true;
+	}
 }

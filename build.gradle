@@ -5,6 +5,8 @@ plugins {
 group = 'com.gean.demo'
 version = '0.0.1-SNAPSHOT'
 
+sourceCompatibility = '11'
+
 jar {
 	baseName = 'saga-pattern-axon-spring-boot-sample'
 	version = '0.0.1-SNAPSHOT'

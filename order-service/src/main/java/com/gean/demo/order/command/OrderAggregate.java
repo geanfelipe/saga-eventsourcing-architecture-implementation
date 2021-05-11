@@ -9,12 +9,12 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
-import com.gean.demo.order.command.api.CreateOrderCommand;
-import com.gean.demo.order.command.api.OrderCreatedEvent;
-import com.gean.demo.order.command.api.OrderUpdatedEvent;
-import com.gean.demo.order.command.api.UpdateOrderStatusCommand;
+import com.gean.demo.core.command.api.CreateOrderCommand;
+import com.gean.demo.core.command.api.OrderCreatedEvent;
+import com.gean.demo.core.command.api.OrderUpdatedEvent;
+import com.gean.demo.core.command.api.UpdateOrderStatusCommand;
 
-@Aggregate
+@Aggregate(cache = "cache", snapshotTriggerDefinition = "orderSnapshotTriggerDefinition")
 public class OrderAggregate {
 
 	@AggregateIdentifier

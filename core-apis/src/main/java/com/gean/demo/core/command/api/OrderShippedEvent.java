@@ -1,7 +1,15 @@
 
 package com.gean.demo.core.command.api;
 
-public class OrderShippedEvent {
+import java.io.Serializable;
+
+import org.axonframework.serialization.Revision;
+
+@Revision("1.0")
+public class OrderShippedEvent implements Serializable {
+
+	private static final long serialVersionUID = 1464258002491284274L;
+
 	private String shippingId;
 
 	private String orderId;
@@ -49,5 +57,51 @@ public class OrderShippedEvent {
 		        + ", paymentId="
 		        + paymentId
 		        + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (orderId == null ? 0 : orderId.hashCode());
+		result = prime * result + (paymentId == null ? 0 : paymentId.hashCode());
+		result = prime * result + (shippingId == null ? 0 : shippingId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final OrderShippedEvent other = (OrderShippedEvent) obj;
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
+			return false;
+		}
+		if (paymentId == null) {
+			if (other.paymentId != null) {
+				return false;
+			}
+		} else if (!paymentId.equals(other.paymentId)) {
+			return false;
+		}
+		if (shippingId == null) {
+			if (other.shippingId != null) {
+				return false;
+			}
+		} else if (!shippingId.equals(other.shippingId)) {
+			return false;
+		}
+		return true;
 	}
 }

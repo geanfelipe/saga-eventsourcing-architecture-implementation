@@ -3,7 +3,7 @@ package com.gean.demo.order.command;
 
 import java.util.UUID;
 
-import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gean.demo.core.command.api.CreateInvoiceCommand;
 import com.gean.demo.core.command.api.CreateShippingCommand;
 import com.gean.demo.core.command.api.InvoiceCreatedEvent;
+import com.gean.demo.core.command.api.OrderCreatedEvent;
 import com.gean.demo.core.command.api.OrderShippedEvent;
-import com.gean.demo.order.command.api.OrderCreatedEvent;
-import com.gean.demo.order.command.api.OrderUpdatedEvent;
-import com.gean.demo.order.command.api.UpdateOrderStatusCommand;
+import com.gean.demo.core.command.api.OrderUpdatedEvent;
+import com.gean.demo.core.command.api.UpdateOrderStatusCommand;
 
 @Saga
 public class OrderManagementSaga {
@@ -26,7 +26,7 @@ public class OrderManagementSaga {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderManagementSaga.class);
 
 	@Autowired
-	private transient CommandGateway commandGateway;
+	private ReactorCommandGateway reactiveCommandGateway;
 
 	@StartSaga
 	@SagaEventHandler(associationProperty = "orderId")
@@ -36,7 +36,7 @@ public class OrderManagementSaga {
 
 		SagaLifecycle.associateWith("paymentId", paymentId);
 		// send the commands
-		commandGateway.send(new CreateInvoiceCommand(paymentId, orderCreatedEvent.getOrderId()));
+		reactiveCommandGateway.send(new CreateInvoiceCommand(paymentId, orderCreatedEvent.getOrderId())).subscribe();
 	}
 
 	@SagaEventHandler(associationProperty = "paymentId")
@@ -49,16 +49,17 @@ public class OrderManagementSaga {
 		SagaLifecycle.associateWith("shippingId", shippingId);
 
 		// send the create shipping command
-		commandGateway.send(new CreateShippingCommand(shippingId,
+		reactiveCommandGateway.send(new CreateShippingCommand(shippingId,
 		        invoiceCreatedEvent.getOrderId(),
-		        invoiceCreatedEvent.getPaymentId()));
+		        invoiceCreatedEvent.getPaymentId())).subscribe();
 	}
 
 	@SagaEventHandler(associationProperty = "orderId")
 	public void handle(final OrderShippedEvent orderShippedEvent) {
 		LOGGER.info("OrderShippedEvent - 3 Saga continued {}", orderShippedEvent);
-		commandGateway.send(
-		        new UpdateOrderStatusCommand(orderShippedEvent.getOrderId(), String.valueOf(OrderStatus.SHIPPED)));
+		reactiveCommandGateway
+		        .send(new UpdateOrderStatusCommand(orderShippedEvent.getOrderId(), String.valueOf(OrderStatus.SHIPPED)))
+		        .subscribe();
 	}
 
 	@SagaEventHandler(associationProperty = "orderId")

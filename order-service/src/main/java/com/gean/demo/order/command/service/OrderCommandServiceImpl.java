@@ -8,8 +8,8 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.gean.demo.core.command.api.CreateOrderCommand;
 import com.gean.demo.order.command.OrderStatus;
-import com.gean.demo.order.command.api.CreateOrderCommand;
 
 @Component
 public class OrderCommandServiceImpl implements OrderCommandService {

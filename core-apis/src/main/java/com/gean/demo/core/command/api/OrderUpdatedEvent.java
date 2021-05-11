@@ -1,7 +1,14 @@
 
 package com.gean.demo.core.command.api;
 
-public class OrderUpdatedEvent {
+import java.io.Serializable;
+
+import org.axonframework.serialization.Revision;
+
+@Revision("1.0")
+public class OrderUpdatedEvent implements Serializable {
+
+	private static final long serialVersionUID = 686080072782941441L;
 
 	private String orderId;
 
@@ -30,4 +37,41 @@ public class OrderUpdatedEvent {
 		this.orderStatus = orderStatus;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (orderId == null ? 0 : orderId.hashCode());
+		result = prime * result + (orderStatus == null ? 0 : orderStatus.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final OrderUpdatedEvent other = (OrderUpdatedEvent) obj;
+		if (orderId == null) {
+			if (other.orderId != null) {
+				return false;
+			}
+		} else if (!orderId.equals(other.orderId)) {
+			return false;
+		}
+		if (orderStatus == null) {
+			if (other.orderStatus != null) {
+				return false;
+			}
+		} else if (!orderStatus.equals(other.orderStatus)) {
+			return false;
+		}
+		return true;
+	}
 }
