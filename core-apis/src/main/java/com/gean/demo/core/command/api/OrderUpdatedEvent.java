@@ -74,4 +74,9 @@ public class OrderUpdatedEvent implements Serializable {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "OrderUpdatedEvent [orderId=" + orderId + ", orderStatus=" + orderStatus + "]";
+	}
 }

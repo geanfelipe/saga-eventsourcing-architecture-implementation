@@ -6,6 +6,8 @@ import org.axonframework.common.caching.Cache;
 import org.axonframework.common.caching.WeakReferenceCache;
 import org.axonframework.config.EventProcessingConfigurer;
 import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventhandling.ListenerInvocationErrorHandler;
+import org.axonframework.eventhandling.PropagatingErrorHandler;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.messaging.interceptors.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +54,12 @@ public class CommandConfiguration {
 		reactorCommandGateway.registerDispatchInterceptor(new LoggingReactorMessageDispatchInterceptor<>());
 	}
 
+	/***************************************/
+	/* Error handler */
+	/***************************************/
+
+	@Bean
+	public ListenerInvocationErrorHandler listenerInvocationErrorHandler() {
+		return PropagatingErrorHandler.INSTANCE;
+	}
 }

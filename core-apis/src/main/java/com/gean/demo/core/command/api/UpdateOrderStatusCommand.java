@@ -74,4 +74,9 @@ public class UpdateOrderStatusCommand implements Serializable {
 		}
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "UpdateOrderStatusCommand [orderId=" + orderId + ", orderStatus=" + orderStatus + "]";
+	}
 }

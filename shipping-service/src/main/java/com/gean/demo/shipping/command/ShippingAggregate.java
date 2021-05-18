@@ -23,7 +23,7 @@ public class ShippingAggregate {
 	public ShippingAggregate() {}
 
 	@CommandHandler
-	public ShippingAggregate(final CreateShippingCommand createShippingCommand) {
+	public ShippingAggregate(final CreateShippingCommand createShippingCommand) throws Exception {
 		AggregateLifecycle.apply(new OrderShippedEvent(createShippingCommand.getShippingId(),
 		        createShippingCommand.getOrderId(),
 		        createShippingCommand.getPaymentId()));

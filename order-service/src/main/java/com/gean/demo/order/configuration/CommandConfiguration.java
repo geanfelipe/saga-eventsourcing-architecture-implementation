@@ -8,6 +8,8 @@ import org.axonframework.common.caching.Cache;
 import org.axonframework.common.caching.WeakReferenceCache;
 import org.axonframework.config.EventProcessingConfigurer;
 import org.axonframework.eventhandling.EventBus;
+import org.axonframework.eventhandling.ListenerInvocationErrorHandler;
+import org.axonframework.eventhandling.PropagatingErrorHandler;
 import org.axonframework.eventsourcing.EventCountSnapshotTriggerDefinition;
 import org.axonframework.eventsourcing.Snapshotter;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
@@ -70,6 +72,15 @@ public class CommandConfiguration {
 	@Autowired
 	public void reactiveCommandGatewayConfiguration(final ReactorCommandGateway reactorCommandGateway) {
 		reactorCommandGateway.registerDispatchInterceptor(new LoggingReactorMessageDispatchInterceptor<>());
+	}
+
+	/***************************************/
+	/* Error handler */
+	/***************************************/
+
+	@Bean
+	public ListenerInvocationErrorHandler listenerInvocationErrorHandler() {
+		return PropagatingErrorHandler.INSTANCE;
 	}
 
 }

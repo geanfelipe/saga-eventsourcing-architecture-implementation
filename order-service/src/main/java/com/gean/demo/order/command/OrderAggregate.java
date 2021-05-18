@@ -13,6 +13,7 @@ import com.gean.demo.core.command.api.CreateOrderCommand;
 import com.gean.demo.core.command.api.OrderCreatedEvent;
 import com.gean.demo.core.command.api.OrderUpdatedEvent;
 import com.gean.demo.core.command.api.UpdateOrderStatusCommand;
+import com.gean.demo.order.command.exception.OrderUpdateEvenException;
 
 @Aggregate(cache = "cache", snapshotTriggerDefinition = "orderSnapshotTriggerDefinition")
 public class OrderAggregate {
@@ -48,6 +49,9 @@ public class OrderAggregate {
 
 	@CommandHandler
 	protected void on(final UpdateOrderStatusCommand updateOrderStatusCommand) {
+		if (orderStatus.equals(OrderStatus.SHIPPED) || orderStatus.equals(OrderStatus.REJECTED)) {
+			throw new OrderUpdateEvenException("Order has the status " + orderStatus + " and can no longer be updated");
+		}
 		AggregateLifecycle.apply(new OrderUpdatedEvent(updateOrderStatusCommand.getOrderId(),
 		        updateOrderStatusCommand.getOrderStatus()));
 	}

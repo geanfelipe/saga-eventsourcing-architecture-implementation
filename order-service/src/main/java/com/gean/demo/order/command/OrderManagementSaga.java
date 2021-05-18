@@ -3,6 +3,7 @@ package com.gean.demo.order.command;
 
 import java.util.UUID;
 
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.extensions.reactor.commandhandling.gateway.ReactorCommandGateway;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.SagaLifecycle;
@@ -28,6 +29,9 @@ public class OrderManagementSaga {
 	@Autowired
 	private ReactorCommandGateway reactiveCommandGateway;
 
+	@Autowired
+	private CommandGateway commandGateway;
+
 	@StartSaga
 	@SagaEventHandler(associationProperty = "orderId")
 	public void handle(final OrderCreatedEvent orderCreatedEvent) {
@@ -36,11 +40,11 @@ public class OrderManagementSaga {
 
 		SagaLifecycle.associateWith("paymentId", paymentId);
 		// send the commands
-		reactiveCommandGateway.send(new CreateInvoiceCommand(paymentId, orderCreatedEvent.getOrderId())).subscribe();
+		commandGateway.sendAndWait(new CreateInvoiceCommand(paymentId, orderCreatedEvent.getOrderId()));
 	}
 
 	@SagaEventHandler(associationProperty = "paymentId")
-	public void handle(final InvoiceCreatedEvent invoiceCreatedEvent) {
+	public void handle(final InvoiceCreatedEvent invoiceCreatedEvent) throws Exception {
 		final String shippingId = UUID.randomUUID().toString();
 
 		LOGGER.info("InvoiceCreatedEvent - 2 Saga continued {}", invoiceCreatedEvent);
@@ -52,6 +56,7 @@ public class OrderManagementSaga {
 		reactiveCommandGateway.send(new CreateShippingCommand(shippingId,
 		        invoiceCreatedEvent.getOrderId(),
 		        invoiceCreatedEvent.getPaymentId())).subscribe();
+
 	}
 
 	@SagaEventHandler(associationProperty = "orderId")
@@ -59,6 +64,9 @@ public class OrderManagementSaga {
 		LOGGER.info("OrderShippedEvent - 3 Saga continued {}", orderShippedEvent);
 		reactiveCommandGateway
 		        .send(new UpdateOrderStatusCommand(orderShippedEvent.getOrderId(), String.valueOf(OrderStatus.SHIPPED)))
+		        .doOnError(error -> {
+			        LOGGER.info("It has happened an error in shippingCommand {}", error.getMessage());
+		        })
 		        .subscribe();
 	}
 
@@ -67,5 +75,4 @@ public class OrderManagementSaga {
 		LOGGER.info("OrderUpdatedEvent - 4 Saga finished {}", orderUpdatedEvent);
 		SagaLifecycle.end();
 	}
-
 }
